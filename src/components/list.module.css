@@ -1,0 +1,23 @@
+.list {
+    display: flex;
+}
+
+.hide {
+    display: none;
+}
+
+.listWrap {
+    width: 275px;
+    list-style-type: none;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.wrapper {
+    width: 400px;
+    margin: 0 auto;
+}
+.btnAdd {
+    float: right;
+
+}
