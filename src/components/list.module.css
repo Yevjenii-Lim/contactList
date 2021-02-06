@@ -1,13 +1,16 @@
 .list {
     display: flex;
+    justify-content: space-between;
 }
 
 .hide {
     display: none;
 }
-
+.wrapperInputs {
+    display: flex;
+}
 .listWrap {
-    width: 275px;
+    width: 85%;
     list-style-type: none;
     margin-left: 0;
     padding-left: 0;
@@ -16,8 +19,12 @@
 .wrapper {
     width: 400px;
     margin: 0 auto;
-}
-.btnAdd {
-    float: right;
 
+}
+
+
+.listItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
