@@ -38,7 +38,7 @@ const ContactList = () => {
     "Z",
   ];
 
-  let [contacts, setContact] = useState(arr);
+  let [contacts, setContact] = useState([]);
   let alphabet = [];
   let listLetters = new Set();
   contacts.forEach((i) => {
