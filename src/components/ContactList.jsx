@@ -74,8 +74,8 @@ const ContactList = () => {
     setContact([...contacts]);
   }, [contacts.length]);
 
-  let removeContact = (id) => {
-    let agree = window.confirm("sure delete contact?");
+  let removeContact = (id, name) => {
+    let agree = window.confirm("sure delete " + name + " contact?");
     if (agree) {
       let item = contacts.findIndex((i) => i.id === id);
       contacts.splice(item, 1);

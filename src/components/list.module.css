@@ -21,10 +21,37 @@
     margin: 0 auto;
 
 }
+.itemWraper {
+    display: flex;
+    flex-direction: row;
+}
 
 
 .listItem {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    border: 1px solid black;
+    margin: 5px 0;
+}
+.more {
+    position: relative;
+    transition: 0.5s;
+    overflow: hidden;
+}
+.btnDelete {
+    position: absolute;
+    top: 5px;
+    right: 0;
+}
+
+.small {
+    height: 0;
+    transition: 0.5s;
+    overflow: hidden;
+}
+.big {
+    height: 65px;
+   
 }
