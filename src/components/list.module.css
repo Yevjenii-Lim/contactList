@@ -2,12 +2,15 @@
     display: flex;
     justify-content: space-between;
 }
-
+a {
+    color: black;
+}
 .hide {
     display: none;
 }
 .wrapperInputs {
     display: flex;
+
 }
 .listWrap {
     width: 85%;
@@ -19,6 +22,8 @@
 .wrapper {
     width: 400px;
     margin: 0 auto;
+    position: relative;
+  
 
 }
 .itemWraper {
@@ -34,11 +39,27 @@
     position: relative;
     border: 1px solid black;
     margin: 5px 0;
+    position: relative;
+    padding: 0 10px;
+}
+.listItem p {
+    margin: 5px 0;
+}
+.listItem a {
+    position: absolute;
+    right: 65px;
+    top: 4px;
 }
 .more {
     position: relative;
     transition: 0.5s;
     overflow: hidden;
+}
+.more p {
+    margin: 0;
+}
+.more .option {
+    font-weight: bold;
 }
 .btnDelete {
     position: absolute;
@@ -54,4 +75,51 @@
 .big {
     height: 65px;
    
+}
+.alphabet {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    /* margin-left: 10px; */
+    margin-top: 15px;
+
+}
+.alphabet p {
+    margin: 5px 0;
+    
+}
+.show {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-weight: bold;
+}
+
+.worning {
+    position: absolute;
+    left: -160px;
+    top: 50px;
+    border: 1px solid red;
+    padding: 5px;
+    background-color: yellow;
+}
+
+.worning::after {
+    content: " ";
+    border: 1px solid red;
+    border-bottom: none;
+    border-left: none;
+    background-color: yellow;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    right: -6.5px;
+    top: 9px;
+    transform: rotate(45deg);
+}   
+
+.avatar {
+    width: 25px;
+    height: 25px;
+    border-radius: 50px;
 }

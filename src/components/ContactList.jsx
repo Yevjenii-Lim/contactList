@@ -39,6 +39,7 @@ const ContactList = () => {
   ];
 
   let [contacts, setContact] = useState([]);
+  let [showWorning, setWorning] = useState(false)
   let alphabet = [];
   let listLetters = new Set();
   contacts.forEach((i) => {
@@ -92,6 +93,7 @@ const ContactList = () => {
       number={i.phone}
       id={i.id}
       address={i.address}
+      showWorning={showWorning}
       // alphabet={alph}
     ></ContactItem>
   ));
@@ -124,8 +126,9 @@ const ContactList = () => {
 
   const addContact = () => {
     if (contactName.length < 1) {
-      console.log("add name");
+      setWorning(true)
     } else {
+      setWorning(false)
       setContact([
         ...contacts,
         {
@@ -141,7 +144,7 @@ const ContactList = () => {
 
   return (
     <div className={s.wrapper}>
-      <h1>Your contact list</h1>
+      <h1>Your contact book</h1>
       <div className={s.wrapperInputs}>
         <input
           type="text"
@@ -162,13 +165,19 @@ const ContactList = () => {
         <button className={s.btnAdd} onClick={addContact}>
           add contacts
         </button>
+        {/* {showWorning? null : <p>name is reqatide</p>} */}
+        <p className={(showWorning ? null : s.hide) + " " + s.worning}>name is reqatide!
+        </p>
       </div>
 
       <div className={s.list}>
         <ul className={s.listWrap}>{items}</ul>
-        <div>{alphabet}</div>
+        <div className={s.alphabet}>{alphabet}
+        
+      <button className={s.show} onClick={showAll}>show all</button>
+        </div>
       </div>
-      <button onClick={showAll}>show all</button>
+      
     </div>
   );
 };
