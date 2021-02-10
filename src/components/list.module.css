@@ -71,6 +71,11 @@ a {
     height: 0;
     transition: 0.5s;
     overflow: hidden;
+    
+}
+.small p, .small .option {
+    margin: 0;
+  
 }
 .big {
     height: 65px;

@@ -5,7 +5,7 @@ import s from "./list.module.css";
 
 const ContactList = () => {
   let arr = [
-    { name: "John", phone: 1234123,id: 11 },
+    { name: "John", phone: 1234123, id: 11 },
     { name: "Kevin", phone: 3523523, id: 12 },
   ];
 
@@ -39,7 +39,8 @@ const ContactList = () => {
   ];
 
   let [contacts, setContact] = useState([]);
-  let [showWorning, setWorning] = useState(false)
+  let [showWorning, setWorning] = useState(false);
+  let [showMore, setShowMore] = useState([]);
   let alphabet = [];
   let listLetters = new Set();
   contacts.forEach((i) => {
@@ -59,20 +60,35 @@ const ContactList = () => {
   // let [alph, setAlph] = useState(alph)
   // setAlph(alphabet)
   const loadUsers = () => {
-    axios.get("https://jsonplaceholder.typicode.com/users").then((responce) =>
-      setContact([
-        ...responce.data.sort((a, b) => {
-          return a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1;
-        }),
-      ])
-    );
+    axios
+      .get("https://jsonplaceholder.typicode.com/users")
+      .then((responce) => {
+        setContact([
+          ...responce.data.sort((a, b) => {
+            return a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1;
+          }),
+        ]);
+        // console.log(contacts)
+      })
+      .then(() => {
+        for (let i = 0; i < 11; i++) {
+          showMore.push(true);
+        }
+        // console.log(contacts)
+      });
   };
   useEffect(loadUsers, []);
+
   useEffect(() => {
     contacts.sort((a, b) => {
       return a.name[0].toUpperCase() < b.name[0].toUpperCase() ? -1 : 1;
     });
     setContact([...contacts]);
+
+    contacts.forEach((i, index) => {
+      i.showMore = showMore[index];
+    });
+      // console.log(showMore)
   }, [contacts.length]);
 
   let removeContact = (id, name) => {
@@ -83,6 +99,16 @@ const ContactList = () => {
       setContact([...contacts]);
     }
   };
+
+  let openMore = (id) => {
+    // console.log(id)
+    let boolean = !showMore[id]
+   let showMoreCopy =  showMore.map(i => i = true)
+    // console.log(showMoreCopy)
+    showMoreCopy.splice(id, 1, boolean)
+    setShowMore([...showMoreCopy])
+    // console.log(showMoreCopy)
+  }
   // console.log(contacts)
   let items = contacts.map((i, index) => (
     <ContactItem
@@ -94,6 +120,8 @@ const ContactList = () => {
       id={i.id}
       address={i.address}
       showWorning={showWorning}
+      showMore={showMore[i.id]}
+      openMore={openMore}
       // alphabet={alph}
     ></ContactItem>
   ));
@@ -101,13 +129,13 @@ const ContactList = () => {
   let [contactNumber, setNumber] = useState("");
 
   let filter = (e) => {
-    
     contacts.forEach((i) =>
       i.name[0].toUpperCase() !== e.target.innerText
         ? (i.hide = true)
         : (i.hide = false)
     );
     setContact([...contacts]);
+    openMore(null)
   };
   let showAll = () => {
     contacts.forEach((i) => (i.hide = false));
@@ -126,9 +154,9 @@ const ContactList = () => {
 
   const addContact = () => {
     if (contactName.length < 1) {
-      setWorning(true)
+      setWorning(true);
     } else {
-      setWorning(false)
+      setWorning(false);
       setContact([
         ...contacts,
         {
@@ -166,18 +194,21 @@ const ContactList = () => {
           add contacts
         </button>
         {/* {showWorning? null : <p>name is reqatide</p>} */}
-        <p className={(showWorning ? null : s.hide) + " " + s.worning}>name is reqatide!
+        <p className={(showWorning ? null : s.hide) + " " + s.worning}>
+          name is reqatide!
         </p>
       </div>
 
       <div className={s.list}>
         <ul className={s.listWrap}>{items}</ul>
-        <div className={s.alphabet}>{alphabet}
-        
-      <button className={s.show} onClick={showAll}>show all</button>
+        <div className={s.alphabet}>
+          {alphabet}
+
+          <button className={s.show} onClick={showAll}>
+            show all
+          </button>
         </div>
       </div>
-      
     </div>
   );
 };

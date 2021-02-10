@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import s from "./list.module.css";
 const ContactItem = (props) => {
+    // debugger
+    // console.log(props.id)
   // console.log(props.address)
   //   let arr = [
   //      { name: "John", phone: 1234123,id: 11 },
@@ -23,6 +25,7 @@ const ContactItem = (props) => {
         setHide({
           hide: !hideMode.hide,
         });
+        props.openMore(props.id)
       })
       .catch((e) => {
         alert("no more information");
@@ -55,9 +58,9 @@ const ContactItem = (props) => {
             </svg>
           </a>
         </p>
-        <button onClick={getAddress}>more</button>
+        <button onClick={() => getAddress()}>more</button>
       </li>
-      <div className={hideMode.hide ? s.small : s.big + " " + s.more}>
+      <div className={(props.showMore ? s.small : s.big) + " " + s.more}>
         <span className={s.option}>City:</span> <span>{!address.city ? null : address.city}</span>
         <p>
           <span className={s.option}>Street:</span>{" "}
@@ -68,7 +71,7 @@ const ContactItem = (props) => {
             <span>{props.number}</span>
         </p>
         <button
-          className={s.btnDelete + " " + (hideMode.hide ? s.hide : null)}
+        className={s.btnDelete}
           onClick={() => props.removeContact(props.id, props.name)}
         >
           delete
