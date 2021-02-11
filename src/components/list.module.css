@@ -1,9 +1,11 @@
+
 .list {
     display: flex;
     justify-content: space-between;
+    background-color: rgb(0, 0, 0);
 }
 a {
-    color: black;
+    color: white;
 }
 .hide {
     display: none;
@@ -38,9 +40,12 @@ a {
     align-items: center;
     position: relative;
     border: 1px solid black;
-    margin: 5px 0;
+    /* margin: 5px 0; */
     position: relative;
     padding: 0 10px;
+    background-color: transparent;
+    color: white;
+    border-bottom: 1px solid white;
 }
 .listItem p {
     margin: 5px 0;
@@ -54,6 +59,10 @@ a {
     position: relative;
     transition: 0.5s;
     overflow: hidden;
+    color: white;
+    padding: 0 19px;
+    background-color: rgb(41, 41, 43);
+    border-bottom: 1px solid white;
 }
 .more p {
     margin: 0;
@@ -64,7 +73,7 @@ a {
 .btnDelete {
     position: absolute;
     top: 5px;
-    right: 0;
+    right: 11px;
 }
 
 .small {
@@ -87,6 +96,7 @@ a {
     align-items: center;
     /* margin-left: 10px; */
     margin-top: 15px;
+    color: white;
 
 }
 .alphabet p {
@@ -127,4 +137,19 @@ a {
     width: 25px;
     height: 25px;
     border-radius: 50px;
+}
+
+.letter {
+    background: rgb(77, 77, 77);
+    color: white;
+    padding-left: 19px;
+}
+.bottomBorder {
+    border-bottom: none;
+}
+
+.link {
+    color: black;
+    display: block;
+    margin: 1em 0;
 }

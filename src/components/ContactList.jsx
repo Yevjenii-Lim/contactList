@@ -1,14 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
 import ContactItem from "./Contact";
 import s from "./list.module.css";
 
 const ContactList = () => {
-  let arr = [
-    { name: "John", phone: 1234123, id: 11 },
-    { name: "Kevin", phone: 3523523, id: 12 },
-  ];
-
+  
   let arr_EN = [
     "A",
     "B",
@@ -50,45 +47,39 @@ const ContactList = () => {
         return true;
       }
     }
-    //  return i.name[0] === arr_EN.map(i => i)
   });
   for (let item of listLetters) {
     alphabet.push(item);
   }
   alphabet.sort();
 
-  // let [alph, setAlph] = useState(alph)
-  // setAlph(alphabet)
-  const loadUsers = () => {
-    axios
-      .get("https://jsonplaceholder.typicode.com/users")
-      .then((responce) => {
-        setContact([
-          ...responce.data.sort((a, b) => {
-            return a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1;
-          }),
-        ]);
-        // console.log(contacts)
-      })
-      .then(() => {
-        for (let i = 0; i < 11; i++) {
-          showMore.push(true);
-        }
-        // console.log(contacts)
-      });
-  };
-  useEffect(loadUsers, []);
+  // const loadUsers = () => {
+  //   (async function getContacts() {
+  //     let result = axios.get("https://jsonplaceholder.typicode.com/users");
+  //     let getArrData = await result;
+  //     setContact([...getArrData.data]);
+  //     getArrData.data.forEach(() => showMore.push(true));
+  //     showMore.push(true);
+  //   })();
+  // };
+  useEffect(() => {
+    const loadUsers = () => {
+      (async function getContacts() {
+        let result = axios.get("https://jsonplaceholder.typicode.com/users");
+        let getArrData = await result;
+        setContact([...getArrData.data]);
+        getArrData.data.forEach(() => showMore.push(true));
+        showMore.push(true);
+      })();
+    };
+    loadUsers()
+  }, []);
 
   useEffect(() => {
     contacts.sort((a, b) => {
       return a.name[0].toUpperCase() < b.name[0].toUpperCase() ? -1 : 1;
     });
-    setContact([...contacts]);
-
-    contacts.forEach((i, index) => {
-      i.showMore = showMore[index];
-    });
-      // console.log(showMore)
+    setContact(contacts => [...contacts]);
   }, [contacts.length]);
 
   let removeContact = (id, name) => {
@@ -101,15 +92,23 @@ const ContactList = () => {
   };
 
   let openMore = (id) => {
-    // console.log(id)
-    let boolean = !showMore[id]
-   let showMoreCopy =  showMore.map(i => i = true)
-    // console.log(showMoreCopy)
-    showMoreCopy.splice(id, 1, boolean)
-    setShowMore([...showMoreCopy])
-    // console.log(showMoreCopy)
-  }
-  // console.log(contacts)
+    let boolean = !showMore[id];
+    let showMoreCopy = showMore.map((i) => (i = true));
+
+    showMoreCopy.splice(id, 1, boolean);
+    setShowMore([...showMoreCopy]);
+  };
+
+  let oneLetterArr = [];
+  let oneLetter = (letter) => {
+    let search = oneLetterArr.findIndex((i) => i === letter.toUpperCase());
+    if (search === -1) {
+      oneLetterArr.push(letter.toUpperCase());
+      return letter.toUpperCase();
+    } else {
+      return undefined;
+    }
+  };
   let items = contacts.map((i, index) => (
     <ContactItem
       name={i.name}
@@ -122,7 +121,7 @@ const ContactList = () => {
       showWorning={showWorning}
       showMore={showMore[i.id]}
       openMore={openMore}
-      // alphabet={alph}
+      alphabet={oneLetter(i.name[0])}
     ></ContactItem>
   ));
   let [contactName, setName] = useState("");
@@ -135,7 +134,7 @@ const ContactList = () => {
         : (i.hide = false)
     );
     setContact([...contacts]);
-    openMore(null)
+    openMore(null);
   };
   let showAll = () => {
     contacts.forEach((i) => (i.hide = false));
@@ -165,12 +164,14 @@ const ContactList = () => {
           id: contacts.length + 1,
         },
       ]);
+      setShowMore([...showMore, true]);
       setName("");
       setNumber("");
     }
   };
 
   return (
+    
     <div className={s.wrapper}>
       <h1>Your contact book</h1>
       <div className={s.wrapperInputs}>
@@ -198,7 +199,10 @@ const ContactList = () => {
           name is reqatide!
         </p>
       </div>
-
+      <NavLink className={s.link} to="myPage">
+            My Page
+      </NavLink>
+      
       <div className={s.list}>
         <ul className={s.listWrap}>{items}</ul>
         <div className={s.alphabet}>

@@ -1,9 +1,9 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import s from "./list.module.css";
 const ContactItem = (props) => {
     // debugger
-    // console.log(props.id)
+    // console.log(props.alphabet)
   // console.log(props.address)
   //   let arr = [
   //      { name: "John", phone: 1234123,id: 11 },
@@ -11,34 +11,43 @@ const ContactItem = (props) => {
   //    ];
 
   let [address, setAddress] = useState({});
-  let [hideMode, setHide] = useState({
-    hide: true,
-  });
-
-
+  let [editMode, setEditMode] = useState(false);
+  let [name, setName] = useState(props.name)
+useEffect(() => {
+    setName(props.name)
+}, [props.name])
   
   let getAddress = () => {
     axios
       .get("https://jsonplaceholder.typicode.com/users/" + props.id)
       .then((response) => {
         setAddress({ ...response.data.address });
-        setHide({
-          hide: !hideMode.hide,
-        });
         props.openMore(props.id)
       })
       .catch((e) => {
-        alert("no more information");
+        setAddress({})
+        console.log("no more information");
+        props.openMore(props.id)
       });
 
     //   console.log(address)
   };
-
+let activateEditMode = () => {
+    console.log('asas')
+    setEditMode(true)
+}
+let changeName = (value) => {
+    setName(value)
+}
+let deactivateEditMode = () => {
+    setEditMode(false)
+}
   return (
     <>
-      <li className={props.hide ? s.hide : null + " " + s.listItem}>
+    {props.alphabet !== undefined ? <div className={(props.hide ? s.hide : "" ) + " " + s.letter}>{props.alphabet}</div> : null}
+      <li className={props.hide ? s.hide : " "  + " " + s.listItem + " " + (!props.hide ? s.bottomBorder : " ")}>
         <img className={s.avatar} src={`https://eu.ui-avatars.com/api/?name=${props.name}`} alt=""/>
-        <p>{props.name}</p>
+       {editMode ? <input autoFocus={true} type="text" onBlur={deactivateEditMode} onChange={(e) => changeName(e.target.value)} value={name}/> : <p onDoubleClick={activateEditMode}>{name}</p>} 
         
         <p>
           <a href={`tel:+${props.number}`}>
