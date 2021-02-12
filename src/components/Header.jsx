@@ -134,7 +134,7 @@ let Header = (props) => {
       </p>
     ));
   
-    const addContact = () => {
+ const addContact = () => {
       if (contactName.length < 1) {
         setWorning(true);
       } else {

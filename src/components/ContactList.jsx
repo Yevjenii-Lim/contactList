@@ -3,9 +3,12 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import ContactItem from "./Contact";
 import s from "./list.module.css";
+import avatar from './../assets/photo_2020-09-09_00-57-40.jpg'
+import { addAllContacts, addContactActionCreator } from "../store";
 
-const ContactList = () => {
-  
+
+const ContactList = (props) => {
+  // console.log(props)
   let arr_EN = [
     "A",
     "B",
@@ -34,7 +37,10 @@ const ContactList = () => {
     "Y",
     "Z",
   ];
-
+  let arr = [
+      { name: "John", phone: 1234123,id: 11 },
+       { name: "Kevin", phone: 3523523, id: 12 },
+     ];
   let [contacts, setContact] = useState([]);
   let [showWorning, setWorning] = useState(false);
   let [showMore, setShowMore] = useState([]);
@@ -62,34 +68,49 @@ const ContactList = () => {
   //     showMore.push(true);
   //   })();
   // };
+  
   useEffect(() => {
     const loadUsers = () => {
+      
       (async function getContacts() {
+        if(props.state.contacts.length === 0) {
+              console.log('mount')
         let result = axios.get("https://jsonplaceholder.typicode.com/users");
         let getArrData = await result;
-        setContact([...getArrData.data]);
+        // arr = [...getArrData.data]
+        // setContact([...getArrData.data]);
+        props.dispatch(addAllContacts(getArrData.data))
         getArrData.data.forEach(() => showMore.push(true));
         showMore.push(true);
+        // console.log(showMore)
+        }
+    
       })();
     };
     loadUsers()
-  }, []);
+  }, [props.state.contacts.length]);
 
   useEffect(() => {
     contacts.sort((a, b) => {
       return a.name[0].toUpperCase() < b.name[0].toUpperCase() ? -1 : 1;
     });
+    // props.dispatch(addAllContacts(contacts))
     setContact(contacts => [...contacts]);
-  }, [contacts.length]);
+  }, [props.state.contacts.length]);
 
   let removeContact = (id, name) => {
     let agree = window.confirm("sure delete " + name + " contact?");
     if (agree) {
       let item = contacts.findIndex((i) => i.id === id);
       contacts.splice(item, 1);
+      
       setContact([...contacts]);
     }
   };
+  // useEffect(() => {
+    
+  //   return () => console.log('did unmount')
+  // },[])
 
   let openMore = (id) => {
     let boolean = !showMore[id];
@@ -109,12 +130,14 @@ const ContactList = () => {
       return undefined;
     }
   };
-  let items = contacts.map((i, index) => (
+  // console.log(props.state.contacts)
+  // console.log('items')
+  let items = props.state.contacts.map((i, index) => (
     <ContactItem
       name={i.name}
       hide={i.hide}
       removeContact={removeContact}
-      key={index}
+      key={i.id}
       number={i.phone}
       id={i.id}
       address={i.address}
@@ -151,23 +174,26 @@ const ContactList = () => {
     </p>
   ));
 
-  const addContact = () => {
-    if (contactName.length < 1) {
-      setWorning(true);
-    } else {
-      setWorning(false);
-      setContact([
-        ...contacts,
-        {
-          name: contactName,
-          phone: contactNumber,
-          id: contacts.length + 1,
-        },
-      ]);
-      setShowMore([...showMore, true]);
-      setName("");
-      setNumber("");
-    }
+const addContact = () => {
+  // addContactActionCreator()
+  // let a = addContactActionCreator()
+  props.dispatch(addContactActionCreator({name: 'hons', phone: 123123}))
+    // if (contactName.length < 1) {
+    //   setWorning(true);
+    // } else {
+    //   setWorning(false);
+    //   setContact([
+    //     ...contacts,
+    //     {
+    //       name: contactName,
+    //       phone: contactNumber,
+    //       id: contacts.length + 1,
+    //     },
+    //   ]);
+    //   setShowMore([...showMore, true]);
+    //   setName("");
+    //   setNumber("");
+    // }
   };
 
   return (
@@ -199,9 +225,13 @@ const ContactList = () => {
           name is reqatide!
         </p>
       </div>
+      <div className={s.myPage}>
+      <img src={avatar} alt=""/>
       <NavLink className={s.link} to="myPage">
             My Page
       </NavLink>
+      </div>
+  
       
       <div className={s.list}>
         <ul className={s.listWrap}>{items}</ul>
@@ -216,5 +246,6 @@ const ContactList = () => {
     </div>
   );
 };
+
 
 export default ContactList;

@@ -24,8 +24,10 @@ a {
 .wrapper {
     width: 400px;
     margin: 0 auto;
-    position: relative;
-  
+    position: relative; 
+    border: 3px solid rgb(155, 155, 155);
+    margin: 3em auto;
+    border-radius: 10px;
 
 }
 .itemWraper {
@@ -45,8 +47,9 @@ a {
     padding: 0 10px;
     background-color: transparent;
     color: white;
-    border-bottom: 1px solid white;
+    border-top: 1px solid white;
 }
+
 .listItem p {
     margin: 5px 0;
 }
@@ -80,7 +83,7 @@ a {
     height: 0;
     transition: 0.5s;
     overflow: hidden;
-    
+    border-bottom: 0px solid white;
 }
 .small p, .small .option {
     margin: 0;
@@ -144,12 +147,54 @@ a {
     color: white;
     padding-left: 19px;
 }
-.bottomBorder {
-    border-bottom: none;
-}
+
 
 .link {
     color: black;
     display: block;
     margin: 1em 0;
+}
+
+.myPage {
+    display: flex;
+    justify-content: flex-start;
+    padding: 10px 0;
+}
+.myPage img {
+    width: 50px;
+    margin-right: 10px;
+}
+
+.info {
+    /* display: flex; */
+    /* justify-content: space-between; */
+    margin-top: 20px;
+    /* flex-direction: column; */
+    /* align-items: center; */
+}
+
+.info p {
+    text-align: center;
+    background-color: rgb(77, 77, 77);
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+.info img {
+    width: 100px;
+    height: 110px;
+}
+.bringMeBack {
+    color: black;
+    display: block;
+    margin-top: 20px;
+}
+.info a {
+    color: white;
+}
+.myPageAvatar {
+    display: block;
+    margin: 0 auto;
+    width: 100px;
 }

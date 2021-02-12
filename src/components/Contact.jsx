@@ -2,8 +2,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import s from "./list.module.css";
 const ContactItem = (props) => {
-    // debugger
-    // console.log(props.alphabet)
+  // debugger
+  // console.log(props)
+  // console.log(props.alphabet)
   // console.log(props.address)
   //   let arr = [
   //      { name: "John", phone: 1234123,id: 11 },
@@ -12,43 +13,71 @@ const ContactItem = (props) => {
 
   let [address, setAddress] = useState({});
   let [editMode, setEditMode] = useState(false);
-  let [name, setName] = useState(props.name)
-useEffect(() => {
-    setName(props.name)
-}, [props.name])
-  
+  let [name, setName] = useState(props.name);
+  useEffect(() => {
+    setName(props.name);
+  }, [props.name]);
+
   let getAddress = () => {
     axios
       .get("https://jsonplaceholder.typicode.com/users/" + props.id)
       .then((response) => {
         setAddress({ ...response.data.address });
-        props.openMore(props.id)
+        props.openMore(props.id);
       })
       .catch((e) => {
-        setAddress({})
+        setAddress({});
         console.log("no more information");
-        props.openMore(props.id)
+        props.openMore(props.id);
       });
 
     //   console.log(address)
   };
-let activateEditMode = () => {
-    console.log('asas')
-    setEditMode(true)
-}
-let changeName = (value) => {
-    setName(value)
-}
-let deactivateEditMode = () => {
-    setEditMode(false)
-}
+  let activateEditMode = () => {
+    console.log("asas");
+    setEditMode(true);
+  };
+  let changeName = (value) => {
+    setName(value);
+  };
+  let deactivateEditMode = () => {
+    setEditMode(false);
+  };
   return (
     <>
-    {props.alphabet !== undefined ? <div className={(props.hide ? s.hide : "" ) + " " + s.letter}>{props.alphabet}</div> : null}
-      <li className={props.hide ? s.hide : " "  + " " + s.listItem + " " + (!props.hide ? s.bottomBorder : " ")}>
-        <img className={s.avatar} src={`https://eu.ui-avatars.com/api/?name=${props.name}`} alt=""/>
-       {editMode ? <input autoFocus={true} type="text" onBlur={deactivateEditMode} onChange={(e) => changeName(e.target.value)} value={name}/> : <p onDoubleClick={activateEditMode}>{name}</p>} 
-        
+      {props.alphabet !== undefined ? (
+        <div className={(props.hide ? s.hide : "") + " " + s.letter}>
+          {props.alphabet}
+        </div>
+      ) : null}
+      <li
+        className={
+          props.hide
+            ? s.hide
+            : " " +
+              " " +
+              s.listItem +
+              " " +
+              (!props.hide ? s.bottomBorder : " ")
+        }
+      >
+        <img
+          className={s.avatar}
+          src={`https://eu.ui-avatars.com/api/?name=${props.name}`}
+          alt=""
+        />
+        {editMode ? (
+          <input
+            autoFocus={true}
+            type="text"
+            onBlur={deactivateEditMode}
+            onChange={(e) => changeName(e.target.value)}
+            value={name}
+          />
+        ) : (
+          <p onDoubleClick={activateEditMode}>{name}</p>
+        )}
+
         <p>
           <a href={`tel:+${props.number}`}>
             <svg
@@ -70,17 +99,18 @@ let deactivateEditMode = () => {
         <button onClick={() => getAddress()}>more</button>
       </li>
       <div className={(props.showMore ? s.small : s.big) + " " + s.more}>
-        <span className={s.option}>City:</span> <span>{!address.city ? null : address.city}</span>
+        <span className={s.option}>City:</span>{" "}
+        <span>{!address.city ? null : address.city}</span>
         <p>
           <span className={s.option}>Street:</span>{" "}
           <span>{!address.street ? null : address.street}</span>
         </p>
         <p>
-            <span className={s.option}>Phone: </span>
-            <span>{props.number}</span>
+          <span className={s.option}>Phone: </span>
+          <span>{props.number}</span>
         </p>
         <button
-        className={s.btnDelete}
+          className={s.btnDelete}
           onClick={() => props.removeContact(props.id, props.name)}
         >
           delete
