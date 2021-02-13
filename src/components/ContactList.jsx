@@ -4,7 +4,9 @@ import { NavLink } from "react-router-dom";
 import ContactItem from "./Contact";
 import s from "./list.module.css";
 import avatar from './../assets/photo_2020-09-09_00-57-40.jpg'
-import { addAllContacts, addContactActionCreator } from "../store";
+import { addAllContacts, addContactActionCreator, removeContact } from "../store";
+
+
 
 
 const ContactList = (props) => {
@@ -46,7 +48,7 @@ const ContactList = (props) => {
   let [showMore, setShowMore] = useState([]);
   let alphabet = [];
   let listLetters = new Set();
-  contacts.forEach((i) => {
+  props.state.contacts.forEach((i) => {
     for (let letter = 0; letter < arr_EN.length; letter++) {
       if (arr_EN[letter] === i.name[0].toUpperCase()) {
         listLetters.add(arr_EN[letter]);
@@ -83,30 +85,37 @@ const ContactList = (props) => {
         getArrData.data.forEach(() => showMore.push(true));
         showMore.push(true);
         // console.log(showMore)
-        }
+      }else {
+        props.state.contacts.forEach(() => showMore.push(true));
+        showMore.push(true);
+      }
     
       })();
     };
     loadUsers()
-  }, [props.state.contacts.length]);
+  }, []);
 
   useEffect(() => {
-    contacts.sort((a, b) => {
+    props.state.contacts.sort((a, b) => {
       return a.name[0].toUpperCase() < b.name[0].toUpperCase() ? -1 : 1;
     });
-    // props.dispatch(addAllContacts(contacts))
-    setContact(contacts => [...contacts]);
+    // console.log(props.state.contacts)
+    props.dispatch(addAllContacts(props.state.contacts))
+    // setContact(contacts => [...contacts]);
   }, [props.state.contacts.length]);
 
-  let removeContact = (id, name) => {
+  let removeContactOld = (id, name) => {
     let agree = window.confirm("sure delete " + name + " contact?");
     if (agree) {
-      let item = contacts.findIndex((i) => i.id === id);
-      contacts.splice(item, 1);
+      console.log(id, 'consta')
+      props.dispatch(removeContact(id))
+      // let item = contacts.findIndex((i) => i.id === id);
+      // contacts.splice(item, 1);
       
-      setContact([...contacts]);
+      // setContact([...contacts]);
     }
   };
+  
   // useEffect(() => {
     
   //   return () => console.log('did unmount')
@@ -136,7 +145,7 @@ const ContactList = (props) => {
     <ContactItem
       name={i.name}
       hide={i.hide}
-      removeContact={removeContact}
+      removeContact={removeContactOld}
       key={i.id}
       number={i.phone}
       id={i.id}
@@ -151,16 +160,16 @@ const ContactList = (props) => {
   let [contactNumber, setNumber] = useState("");
 
   let filter = (e) => {
-    contacts.forEach((i) =>
+   props.state.contacts.forEach((i) =>
       i.name[0].toUpperCase() !== e.target.innerText
         ? (i.hide = true)
         : (i.hide = false)
     );
-    setContact([...contacts]);
+   props.dispatch(addAllContacts(props.state.contacts))
     openMore(null);
   };
   let showAll = () => {
-    contacts.forEach((i) => (i.hide = false));
+    props.state.contacts.forEach((i) => (i.hide = false));
     setContact([...contacts]);
   };
   alphabet = alphabet.map((i, index) => (
@@ -173,28 +182,23 @@ const ContactList = (props) => {
       {i}
     </p>
   ));
-
 const addContact = () => {
-  // addContactActionCreator()
-  // let a = addContactActionCreator()
-  props.dispatch(addContactActionCreator({name: 'hons', phone: 123123}))
-    // if (contactName.length < 1) {
-    //   setWorning(true);
-    // } else {
-    //   setWorning(false);
-    //   setContact([
-    //     ...contacts,
-    //     {
-    //       name: contactName,
-    //       phone: contactNumber,
-    //       id: contacts.length + 1,
-    //     },
-    //   ]);
-    //   setShowMore([...showMore, true]);
-    //   setName("");
-    //   setNumber("");
-    // }
+
+  if (contactName.length < 1) {
+      setWorning(true);
+    } else {
+      setWorning(false);
+      let newContact = {
+          name: contactName,
+          phone: contactNumber,
+          id: props.state.contacts.length + 1,
+      }
+      props.dispatch(addContactActionCreator(newContact))
+      setShowMore([...showMore, true]);
+      setName("");
+      setNumber("");
   };
+}
 
   return (
     

@@ -14,27 +14,31 @@ const ContactItem = (props) => {
   let [address, setAddress] = useState({});
   let [editMode, setEditMode] = useState(false);
   let [name, setName] = useState(props.name);
+  let [disBtn, setDisBtn] = useState(false)
   useEffect(() => {
     setName(props.name);
   }, [props.name]);
 
   let getAddress = () => {
+    setDisBtn(true)
     axios
       .get("https://jsonplaceholder.typicode.com/users/" + props.id)
       .then((response) => {
         setAddress({ ...response.data.address });
         props.openMore(props.id);
+        setDisBtn(false)
       })
       .catch((e) => {
         setAddress({});
         console.log("no more information");
         props.openMore(props.id);
+        setDisBtn(false)
       });
 
     //   console.log(address)
   };
   let activateEditMode = () => {
-    console.log("asas");
+    // console.log("asas");
     setEditMode(true);
   };
   let changeName = (value) => {
@@ -43,6 +47,7 @@ const ContactItem = (props) => {
   let deactivateEditMode = () => {
     setEditMode(false);
   };
+  let openMoreClasses = s.more + " "+ (props.showMore ? s.small : s.big );
   return (
     <>
       {props.alphabet !== undefined ? (
@@ -96,9 +101,9 @@ const ContactItem = (props) => {
             </svg>
           </a>
         </p>
-        <button onClick={() => getAddress()}>more</button>
+        <button disabled={disBtn} onClick={() => getAddress()}>more</button>
       </li>
-      <div className={(props.showMore ? s.small : s.big) + " " + s.more}>
+      <div className={openMoreClasses}>
         <span className={s.option}>City:</span>{" "}
         <span>{!address.city ? null : address.city}</span>
         <p>
