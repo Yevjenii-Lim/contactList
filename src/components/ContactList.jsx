@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import ContactItem from "./Contact";
 import s from "./list.module.css";
 import avatar from './../assets/photo_2020-09-09_00-57-40.jpg'
-import { addAllContacts, addContactActionCreator, removeContact } from "../store";
+import { addAllContacts, addContactActionCreator, removeContact, openMoreAC } from "../store";
 
 
 
@@ -61,16 +61,6 @@ const ContactList = (props) => {
   }
   alphabet.sort();
 
-  // const loadUsers = () => {
-  //   (async function getContacts() {
-  //     let result = axios.get("https://jsonplaceholder.typicode.com/users");
-  //     let getArrData = await result;
-  //     setContact([...getArrData.data]);
-  //     getArrData.data.forEach(() => showMore.push(true));
-  //     showMore.push(true);
-  //   })();
-  // };
-  
   useEffect(() => {
     const loadUsers = () => {
       
@@ -81,13 +71,15 @@ const ContactList = (props) => {
         let getArrData = await result;
         // arr = [...getArrData.data]
         // setContact([...getArrData.data]);
+        getArrData.data.forEach((i) => i.openMore = true);
         props.dispatch(addAllContacts(getArrData.data))
-        getArrData.data.forEach(() => showMore.push(true));
-        showMore.push(true);
-        // console.log(showMore)
+        // showMore.push(true);
+        console.log(getArrData.data)
+        // console.log(props.state.contacts)
       }else {
-        props.state.contacts.forEach(() => showMore.push(true));
-        showMore.push(true);
+        // showMore.length = 0
+        // props.state.contacts.forEach(() => showMore.push(true));
+        // showMore.push(true);
       }
     
       })();
@@ -107,26 +99,17 @@ const ContactList = (props) => {
   let removeContactOld = (id, name) => {
     let agree = window.confirm("sure delete " + name + " contact?");
     if (agree) {
-      console.log(id, 'consta')
+      console.log(showMore)
       props.dispatch(removeContact(id))
-      // let item = contacts.findIndex((i) => i.id === id);
-      // contacts.splice(item, 1);
-      
-      // setContact([...contacts]);
     }
   };
   
-  // useEffect(() => {
-    
-  //   return () => console.log('did unmount')
-  // },[])
 
-  let openMore = (id) => {
-    let boolean = !showMore[id];
-    let showMoreCopy = showMore.map((i) => (i = true));
 
-    showMoreCopy.splice(id, 1, boolean);
-    setShowMore([...showMoreCopy]);
+  let openMore = (id, bool) => {
+
+    props.dispatch(openMoreAC(id, bool))
+
   };
 
   let oneLetterArr = [];
@@ -151,7 +134,7 @@ const ContactList = (props) => {
       id={i.id}
       address={i.address}
       showWorning={showWorning}
-      showMore={showMore[i.id]}
+      showMore={i.openMore}
       openMore={openMore}
       alphabet={oneLetter(i.name[0])}
     ></ContactItem>
@@ -166,7 +149,7 @@ const ContactList = (props) => {
         : (i.hide = false)
     );
    props.dispatch(addAllContacts(props.state.contacts))
-    openMore(null);
+    // openMore(null);
   };
   let showAll = () => {
     props.state.contacts.forEach((i) => (i.hide = false));
@@ -192,9 +175,10 @@ const addContact = () => {
           name: contactName,
           phone: contactNumber,
           id: props.state.contacts.length + 1,
+          openMore: true
       }
       props.dispatch(addContactActionCreator(newContact))
-      setShowMore([...showMore, true]);
+      // setShowMore([...showMore, true]);
       setName("");
       setNumber("");
   };

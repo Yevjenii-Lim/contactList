@@ -1,6 +1,6 @@
 const ALL_CONTACTS = "ALL_CONTACTS"
 const REMOVE_CONTACT = "REMOVE_CONTACT"
-
+const OPEN_MORE = "OPEN_MORE"
 
 let store = {
     _state: {
@@ -42,12 +42,20 @@ let contactsReducer = (state, action) => {
             }
         }
         case REMOVE_CONTACT: {
-            console.log(action.id)
-            let copyState = {...state} 
-            let contactsCopy = [...copyState.contacts]
+            let contactsCopy = [...state.contacts]
             let index = contactsCopy.findIndex(i => i.id === action.id)
             contactsCopy.splice(index,1)
-            console.log(contactsCopy)
+            return {
+                ...state,
+                contacts: contactsCopy
+            }
+        }
+        case OPEN_MORE: {
+    
+            let contactsCopy = [...state.contacts];
+            let index = contactsCopy.findIndex(i => i.id === action.id)
+            contactsCopy.forEach(i => i.openMore = true)
+            contactsCopy[index].openMore = !action.bool
             return {
                 ...state,
                 contacts: contactsCopy
@@ -57,6 +65,7 @@ let contactsReducer = (state, action) => {
     }
 }
 
+export const openMoreAC = (id, bool) => ({type: OPEN_MORE, id, bool})
 export const addAllContacts = (contacts) => ({type: ALL_CONTACTS, contacts})
 export const addContactActionCreator = (contact) => ({type: "ADD_CONTACT", contact})
 export const removeContact = (id) => ({type: REMOVE_CONTACT, id})

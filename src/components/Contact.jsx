@@ -25,13 +25,13 @@ const ContactItem = (props) => {
       .get("https://jsonplaceholder.typicode.com/users/" + props.id)
       .then((response) => {
         setAddress({ ...response.data.address });
-        props.openMore(props.id);
+        props.openMore(props.id, props.showMore);
         setDisBtn(false)
       })
       .catch((e) => {
         setAddress({});
         console.log("no more information");
-        props.openMore(props.id);
+        props.openMore(props.id, props.showMore);
         setDisBtn(false)
       });
 
