@@ -3,52 +3,69 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import ContactItem from "./Contact";
 import s from "./list.module.css";
-import avatar from './../assets/photo_2020-09-09_00-57-40.jpg'
-import { addAllContacts, addContactActionCreator, removeContact, openMoreAC } from "../store";
+import avatar from "./../assets/photo_2020-09-09_00-57-40.jpg";
+import {
+  addAllContacts,
+  addContactActionCreator,
+  removeContact,
+  openMoreAC,
+} from "../store";
 
+let arr_EN = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
+  "R",
+  "S",
+  "T",
+  "U",
+  "V",
+  "W",
+  "X",
+  "Y",
+  "Z",
+];
 
+let useLoadUser = (props) => {
+  useEffect(() => {
+    const loadUsers = async () => {
+      if (props.state.contacts.length === 0) {
+        console.log("mount");
+        let result = await axios.get(
+          "https://jsonplaceholder.typicode.com/users"
+        );
+        result.data.forEach((i) => (i.openMore = true));
+        props.dispatch(addAllContacts(result.data));
+      }
+    };
+    loadUsers();
+  }, []);
+  useEffect(() => {
+    props.state.contacts.sort((a, b) => {
+      return a.name[0].toUpperCase() < b.name[0].toUpperCase() ? -1 : 1;
+    });
+    props.dispatch(addAllContacts(props.state.contacts));
+  }, [props.state.contacts.length]);
+};
 
-
-const ContactList = (props) => {
-  // console.log(props)
-  let arr_EN = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-    "W",
-    "X",
-    "Y",
-    "Z",
-  ];
-  let arr = [
-      { name: "John", phone: 1234123,id: 11 },
-       { name: "Kevin", phone: 3523523, id: 12 },
-     ];
-  let [contacts, setContact] = useState([]);
-  let [showWorning, setWorning] = useState(false);
-  let [showMore, setShowMore] = useState([]);
-  let alphabet = [];
+let sortArrLetters = (arr) => {
   let listLetters = new Set();
-  props.state.contacts.forEach((i) => {
+  let alphabet = [];
+  arr.forEach((i) => {
     for (let letter = 0; letter < arr_EN.length; letter++) {
       if (arr_EN[letter] === i.name[0].toUpperCase()) {
         listLetters.add(arr_EN[letter]);
@@ -59,57 +76,28 @@ const ContactList = (props) => {
   for (let item of listLetters) {
     alphabet.push(item);
   }
-  alphabet.sort();
+  return alphabet.sort();
+};
 
-  useEffect(() => {
-    const loadUsers = () => {
-      
-      (async function getContacts() {
-        if(props.state.contacts.length === 0) {
-              console.log('mount')
-        let result = axios.get("https://jsonplaceholder.typicode.com/users");
-        let getArrData = await result;
-        // arr = [...getArrData.data]
-        // setContact([...getArrData.data]);
-        getArrData.data.forEach((i) => i.openMore = true);
-        props.dispatch(addAllContacts(getArrData.data))
-        // showMore.push(true);
-        console.log(getArrData.data)
-        // console.log(props.state.contacts)
-      }else {
-        // showMore.length = 0
-        // props.state.contacts.forEach(() => showMore.push(true));
-        // showMore.push(true);
-      }
-    
-      })();
-    };
-    loadUsers()
-  }, []);
+const ContactList = (props) => {
+  let [contacts, setContact] = useState([]);
+  let [showWorning, setWorning] = useState(false);
+  let [contactName, setName] = useState("");
+  let [contactNumber, setNumber] = useState("");
 
-  useEffect(() => {
-    props.state.contacts.sort((a, b) => {
-      return a.name[0].toUpperCase() < b.name[0].toUpperCase() ? -1 : 1;
-    });
-    // console.log(props.state.contacts)
-    props.dispatch(addAllContacts(props.state.contacts))
-    // setContact(contacts => [...contacts]);
-  }, [props.state.contacts.length]);
+  let alphabet = sortArrLetters(props.state.contacts);
+
+  useLoadUser(props);
 
   let removeContactOld = (id, name) => {
     let agree = window.confirm("sure delete " + name + " contact?");
     if (agree) {
-      console.log(showMore)
-      props.dispatch(removeContact(id))
+      props.dispatch(removeContact(id));
     }
   };
-  
-
 
   let openMore = (id, bool) => {
-
-    props.dispatch(openMoreAC(id, bool))
-
+    props.dispatch(openMoreAC(id, bool));
   };
 
   let oneLetterArr = [];
@@ -122,9 +110,8 @@ const ContactList = (props) => {
       return undefined;
     }
   };
-  // console.log(props.state.contacts)
-  // console.log('items')
-  let items = props.state.contacts.map((i, index) => (
+
+  let items = props.state.contacts.map((i) => (
     <ContactItem
       name={i.name}
       hide={i.hide}
@@ -139,16 +126,14 @@ const ContactList = (props) => {
       alphabet={oneLetter(i.name[0])}
     ></ContactItem>
   ));
-  let [contactName, setName] = useState("");
-  let [contactNumber, setNumber] = useState("");
 
   let filter = (e) => {
-   props.state.contacts.forEach((i) =>
+    props.state.contacts.forEach((i) =>
       i.name[0].toUpperCase() !== e.target.innerText
         ? (i.hide = true)
         : (i.hide = false)
     );
-   props.dispatch(addAllContacts(props.state.contacts))
+    props.dispatch(addAllContacts(props.state.contacts));
     // openMore(null);
   };
   let showAll = () => {
@@ -165,27 +150,24 @@ const ContactList = (props) => {
       {i}
     </p>
   ));
-const addContact = () => {
-
-  if (contactName.length < 1) {
+  const addContact = () => {
+    if (contactName.length < 1) {
       setWorning(true);
     } else {
       setWorning(false);
       let newContact = {
-          name: contactName,
-          phone: contactNumber,
-          id: props.state.contacts.length + 1,
-          openMore: true
-      }
-      props.dispatch(addContactActionCreator(newContact))
-      // setShowMore([...showMore, true]);
+        name: contactName,
+        phone: contactNumber,
+        id: props.state.contacts.length + 1,
+        openMore: true,
+      };
+      props.dispatch(addContactActionCreator(newContact));
       setName("");
       setNumber("");
+    }
   };
-}
 
   return (
-    
     <div className={s.wrapper}>
       <h1>Your contact book</h1>
       <div className={s.wrapperInputs}>
@@ -208,19 +190,17 @@ const addContact = () => {
         <button className={s.btnAdd} onClick={addContact}>
           add contacts
         </button>
-        {/* {showWorning? null : <p>name is reqatide</p>} */}
         <p className={(showWorning ? null : s.hide) + " " + s.worning}>
           name is reqatide!
         </p>
       </div>
       <div className={s.myPage}>
-      <img src={avatar} alt=""/>
-      <NavLink className={s.link} to="myPage">
-            My Page
-      </NavLink>
+        <img src={avatar} alt="" />
+        <NavLink className={s.link} to="myPage">
+          My Page
+        </NavLink>
       </div>
-  
-      
+
       <div className={s.list}>
         <ul className={s.listWrap}>{items}</ul>
         <div className={s.alphabet}>
@@ -234,6 +214,5 @@ const addContact = () => {
     </div>
   );
 };
-
 
 export default ContactList;

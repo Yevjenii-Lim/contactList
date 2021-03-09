@@ -1,15 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import s from "./list.module.css";
+
+
+
 const ContactItem = (props) => {
-  // debugger
-  // console.log(props)
-  // console.log(props.alphabet)
-  // console.log(props.address)
-  //   let arr = [
-  //      { name: "John", phone: 1234123,id: 11 },
-  //      { name: "Kevin", phone: 3523523, id: 12 },
-  //    ];
 
   let [address, setAddress] = useState({});
   let [editMode, setEditMode] = useState(false);
@@ -19,26 +14,21 @@ const ContactItem = (props) => {
     setName(props.name);
   }, [props.name]);
 
-  let getAddress = () => {
+  let getAddress = async () => {
     setDisBtn(true)
-    axios
-      .get("https://jsonplaceholder.typicode.com/users/" + props.id)
-      .then((response) => {
+    let isEmpty = Object.keys(address).length
+      if(!!isEmpty) {
+        props.openMore(props.id, props.showMore);
+        setDisBtn(false)
+      }else {
+        let response = await axios.get("https://jsonplaceholder.typicode.com/users/" + props.id)
         setAddress({ ...response.data.address });
         props.openMore(props.id, props.showMore);
         setDisBtn(false)
-      })
-      .catch((e) => {
-        setAddress({});
-        console.log("no more information");
-        props.openMore(props.id, props.showMore);
-        setDisBtn(false)
-      });
-
-    //   console.log(address)
+      }
   };
   let activateEditMode = () => {
-    // console.log("asas");
+
     setEditMode(true);
   };
   let changeName = (value) => {
@@ -55,16 +45,7 @@ const ContactItem = (props) => {
           {props.alphabet}
         </div>
       ) : null}
-      <li
-        className={
-          props.hide
-            ? s.hide
-            : " " +
-              " " +
-              s.listItem +
-              " " +
-              (!props.hide ? s.bottomBorder : " ")
-        }
+      <li className={props.hide ? s.hide : " " + " " + s.listItem + " " + (!props.hide ? s.bottomBorder : " ")}
       >
         <img
           className={s.avatar}

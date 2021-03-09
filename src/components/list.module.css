@@ -33,11 +33,13 @@ a {
     border: 3px solid rgb(155, 155, 155);
     margin: 3em auto;
     border-radius: 10px;
+    padding: 10px;
 
 }
 .itemWraper {
     display: flex;
     flex-direction: row;
+ 
 }
 
 
@@ -48,6 +50,7 @@ a {
     position: relative;
     border: 1px solid black;
     /* margin: 5px 0; */
+    height: 50px;
     position: relative;
     padding: 0 10px;
     background-color: transparent;
@@ -165,6 +168,7 @@ a {
     display: flex;
     justify-content: flex-start;
     padding: 10px 0;
+
 }
 .myPage img {
     width: 50px;
