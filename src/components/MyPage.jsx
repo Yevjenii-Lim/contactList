@@ -1,9 +1,11 @@
 import React from "react";
 import s from "./list.module.css";
 import avatar from "./../assets/photo_2020-09-09_00-57-40.jpg";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
-let MyPage = (props) => {
+let MyPage = () => {
+
+
   return (
     <div className={s.wrapper}>
       <NavLink to="/" className={s.bringMeBack}>

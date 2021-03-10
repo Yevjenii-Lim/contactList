@@ -1,52 +1,56 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import s from "./list.module.css";
 
-
-
 const ContactItem = (props) => {
-
   let [address, setAddress] = useState({});
   let [editMode, setEditMode] = useState(false);
   let [name, setName] = useState(props.name);
-  let [disBtn, setDisBtn] = useState(false)
+  let [disBtn, setDisBtn] = useState(false);
+
   useEffect(() => {
     setName(props.name);
   }, [props.name]);
 
   let getAddress = async () => {
-    setDisBtn(true)
-    let isEmpty = Object.keys(address).length
-      if(!!isEmpty) {
-        props.openMore(props.id, props.showMore);
-        setDisBtn(false)
-      }else {
-        let response = await axios.get("https://jsonplaceholder.typicode.com/users/" + props.id)
-        setAddress({ ...response.data.address });
-        props.openMore(props.id, props.showMore);
-        setDisBtn(false)
-      }
+    setDisBtn(true);
+    let isEmpty = Object.keys(address).length;
+    if (!!isEmpty) {
+      props.openMore(props.id, props.showMore);
+      setDisBtn(false);
+    } else {
+      let response = await axios.get(
+        "http://localhost:5000/users/" + props.id
+      );
+      setAddress({ ...response.data.address });
+      props.openMore(props.id, props.showMore);
+      setDisBtn(false);
+    }
   };
   let activateEditMode = () => {
-
     setEditMode(true);
   };
   let changeName = (value) => {
     setName(value);
   };
-  let deactivateEditMode = () => {
+  let deactivateEditMode = async () => {
+    let user = await fetch("http://localhost:5000/users/"+ props.id)
+    user = await user.json()
+    await fetch("http://localhost:5000/users/"+ props.id, {
+      method: "PUT",
+      headers: {
+        "Content-type": 'application/json'
+      },
+      body: JSON.stringify({...user, name: name})
+    })
     setEditMode(false);
   };
-  let openMoreClasses = s.more + " "+ (props.showMore ? s.small : s.big );
+  let openMoreClasses = s.more + " " + (props.showMore ? s.small : s.big);
   return (
     <>
-      {props.alphabet !== undefined ? (
-        <div className={(props.hide ? s.hide : "") + " " + s.letter}>
-          {props.alphabet}
-        </div>
-      ) : null}
-      <li className={props.hide ? s.hide : " " + " " + s.listItem + " " + (!props.hide ? s.bottomBorder : " ")}
-      >
+      {props.alphabet && <div className={s.letter}>{props.alphabet} </div>}
+      <li className={props.hide ? s.hide : " " + s.listItem}>
         <img
           className={s.avatar}
           src={`https://eu.ui-avatars.com/api/?name=${props.name}`}
@@ -82,9 +86,11 @@ const ContactItem = (props) => {
             </svg>
           </a>
         </p>
-        <button disabled={disBtn} onClick={() => getAddress()}>more</button>
+        <button disabled={disBtn} onClick={() => getAddress()}>
+          more
+        </button>
       </li>
-      <div className={openMoreClasses}>
+     {!props.showMore && <div className={openMoreClasses}>
         <span className={s.option}>City:</span>{" "}
         <span>{!address.city ? null : address.city}</span>
         <p>
@@ -101,7 +107,7 @@ const ContactItem = (props) => {
         >
           delete
         </button>
-      </div>
+      </div>} 
     </>
   );
 };
